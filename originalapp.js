@@ -17,6 +17,7 @@ function App() {
       }).catch(error => {
         alert(error.response ? error.response.data.error : error);
       })
+
   }, [])
 
   function save(e) {
@@ -31,6 +32,7 @@ function App() {
     })
     .then((response) => {
       setTasks(tasks => [...tasks,response.data]);
+      console.log(tasks)
       setTask('');
       setAmount('');
       console.log(amount)
@@ -39,39 +41,20 @@ function App() {
     });
   }
 
-  function remove(id) {
-    const json = JSON.stringify({id:id})
-    axios.post(URL + 'delete.php',json, {
-        headers: {
-            "Content-Type" : "application/json"
-        }
-    })
-    .then((response) => {
-        const newListWithoutRemoved = tasks.filter((item) => item.id !== id);
-        setTasks(newListWithoutRemoved);
-    }).catch (error => {
-        alert(error.response ? error.response.data.error : error);
-    });
-}
-
   return (
     <div className="container">
       <h3>Shopping List</h3>
       <form onSubmit={save}>
         <label>New item</label>
-        <input value={task} placeholder="type description" onChange={e => setTask(e.target.value)} />
-        <input value={amount} placeholder="type amount" onChange={e => setAmount(e.target.value)} />
+        <input value={task} onChange={e => setTask(e.target.value)} />
+        <input value={amount} onChange={e => setAmount(e.target.value)} />
         <button>Add</button>
       </form>
-      <dl>
+      <ol>
         {tasks?.map(task => (
-          <dt key={uuidv4()}>{task.description} <a href="/#"> </a> {task.amount} &nbsp;
-            <a href="/#" className="delete" onClick={() => remove(task.id)}>
-              Delete
-            </a>
-          </dt>
+          <li key={uuidv4()}>{task.description} {task.amount}</li>
         ))}
-      </dl>
+      </ol>
     </div>
   );
 }
